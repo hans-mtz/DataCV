@@ -9,6 +9,11 @@
 rmarkdown::render("cv.rmd",
                   params = list(pdf_mode = TRUE),
                   output_file = "cv.html")
+# Try parameters next time 3 soft and 3 tech
+rmarkdown::render("cv.rmd",
+                  params = list(pdf_mode = TRUE,
+                                soft1="Smart"),
+                  output_file = "cv.html")
 
 # Knit the PDF version to temporary html location
 # tmp_html_cv_loc <- fs::file_temp(ext = ".html")
