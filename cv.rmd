@@ -69,7 +69,7 @@ datadrivencv::build_network_logo(CV$entries_data)
 if(params$pdf_mode){
   cat("View this CV [online](https://raw.githack.com/hans-mtz/DataCV/master/cv.html)")
 } else {
-  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/hans-mtz/DataCV/blob/master/cv.pdf)")
+  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://hansmartinez.com/uploads/HansCV.pdf)")
   
 }
 ```
@@ -94,7 +94,7 @@ Languages {#langs}
 --------------------------------------------------------------------------------
 
 ```{r}
-CV %>% print_skill_bars(skills="langs")
+CV %>% print_skill_bars(var="langs")
 ```
 
 
@@ -121,13 +121,13 @@ Hans Martinez {#title}
 CV %<>% print_text_block("intro") 
 ```
 
-> *Enhancing Data Science and Machine Learning with Economics*
+<!-- > *Enhancing Data Science and Machine Learning with Economics* -->
 
-|Soft Skills | Technical Skills |
-|:-----------|:-----------------|
-| `r params$soft1` | `r params$tech1` | 
-| `r params$soft2` | `r params$tech2` |
-| `r params$soft3` | `r params$tech3` |
+<!-- |Soft Skills | Technical Skills | -->
+<!-- |:-----------|:-----------------| -->
+<!-- | `r params$soft1` | `r params$tech1` |  -->
+<!-- | `r params$soft2` | `r params$tech2` | -->
+<!-- | `r params$soft3` | `r params$tech3` | -->
 
 Education {data-icon=graduation-cap data-concise=true}
 --------------------------------------------------------------------------------
@@ -136,34 +136,6 @@ Education {data-icon=graduation-cap data-concise=true}
 CV %<>% print_section('education')
 ```
 
-
-
-Research Experience {data-icon=laptop}
---------------------------------------------------------------------------------
-
-```{r}
-CV %<>% print_section('research_positions')
-```
-
-
-
-Industry Experience {data-icon=suitcase}
---------------------------------------------------------------------------------
-
-::: aside
-```{r}
-CV %<>% print_text_block('industy_experience_aside')
-```
-:::
-
-```{r}
-CV %<>% print_section('industry_positions')
-```
-
-<!-- These breaks just force a new page so section doesnt get cut off -->
-<!-- <br> -->
-<!-- <br> -->
-<!-- <br> -->
 
 Teaching Experience {data-icon=chalkboard-teacher}
 --------------------------------------------------------------------------------
@@ -178,7 +150,64 @@ Teaching Experience {data-icon=chalkboard-teacher}
 CV %<>% print_section('teaching_positions')
 ```
 
+<!-- These breaks just force a new page so section doesnt get cut off -->
+<br>
+<br>
+<br>
 
+Research Experience {data-icon=laptop}
+--------------------------------------------------------------------------------
+
+```{r}
+CV %<>% print_section('research_positions')
+```
+
+
+
+Working Papers {data-icon=file}
+--------------------------------------------------------------------------------
+
+<!-- ::: aside -->
+<!-- ```{r} -->
+<!-- CV %<>% print_text_block('wp_aside') -->
+<!-- ``` -->
+<!-- ::: -->
+
+```{r}
+CV %<>% print_section('working_papers')
+```
+
+<!-- These breaks just force a new page so section doesnt get cut off -->
+<br>
+<br>
+<br>
+
+
+Academic Publications {data-icon=book}
+--------------------------------------------------------------------------------
+
+<!-- ::: aside -->
+<!-- ```{r} -->
+<!-- CV %<>% print_text_block('publications_aside') -->
+<!-- ``` -->
+<!-- ::: -->
+
+```{r}
+CV %<>% print_section('academic_articles')
+```
+
+Industry Experience {data-icon=suitcase}
+--------------------------------------------------------------------------------
+
+::: aside
+```{r}
+CV %<>% print_text_block('industy_experience_aside')
+```
+:::
+
+```{r}
+CV %<>% print_section('industry_positions')
+```
 
 <!-- Selected Data Science Writing {data-icon=chart-line} -->
 <!-- -------------------------------------------------------------------------------- -->
@@ -216,22 +245,9 @@ CV %<>% print_section('teaching_positions')
 
 
 
-Academic Publications {data-icon=book}
---------------------------------------------------------------------------------
 
-::: aside
-```{r}
-CV %<>% print_text_block('publications_aside')
-```
-:::
 
 ```{r}
-CV %<>% print_section('academic_articles')
+CV %<>% print_links()
 ```
-
-
-
-<!-- ```{r} -->
-<!-- CV %<>% print_links() -->
-<!-- ``` -->
 

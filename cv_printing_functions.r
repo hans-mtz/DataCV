@@ -44,7 +44,7 @@ create_CV_object <-  function(data_location,
     cv$skills        <- read_gsheet(sheet_id = "language_skills")
     cv$text_blocks   <- read_gsheet(sheet_id = "text_blocks")
     cv$contact_info  <- read_gsheet(sheet_id = "contact_info")
-    cv$langs         <- read_gsheet(sheet_id = "langs")
+    cv$langs <- read_gsheet(sheet_id = "langs")
   } else {
     # Want to go old-school with csvs?
     cv$entries_data <- readr::read_csv(paste0(data_location, "entries.csv"), skip = 1)
@@ -186,7 +186,7 @@ print_text_block <- function(cv, label){
 
 #' @description Construct a bar chart of skills
 #' @param out_of The relative maximum for skills. Used to set what a fully filled in skill bar is.
-print_skill_bars <- function(cv, skills="skills",out_of = 5, bar_color = "#969696", bar_background = "#d9d9d9", glue_template = "default"){
+print_skill_bars <- function(cv, var="skills", out_of = 5, bar_color = "#969696", bar_background = "#d9d9d9", glue_template = "default"){
 
   if(glue_template == "default"){
     glue_template <- "
@@ -197,7 +197,7 @@ print_skill_bars <- function(cv, skills="skills",out_of = 5, bar_color = "#96969
                                       {bar_background} {width_percent}% 100%)\"
 >{skill}</div>"
   }
-  cv[[skills]] %>%
+  cv[[var]]%>%
     dplyr::mutate(width_percent = round(100*as.numeric(level)/out_of)) %>%
     glue::glue_data(glue_template) %>%
     print()
