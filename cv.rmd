@@ -61,9 +61,10 @@ Aside
 ```{r}
 # Build interactive network of positions colored by section
 # and connected if they occurred in the same year
-datadrivencv::build_network_logo(CV$entries_data)
-```
+# datadrivencv::build_network_logo(CV$entries_data)
 
+```
+![](hans.jpg)
 
 ```{r}
 if(params$pdf_mode){
