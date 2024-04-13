@@ -17,7 +17,18 @@ rmarkdown::render("cv.rmd",
                   output_file = tmp_html_cv_loc)
 
 # Convert to PDF using Pagedown
+# Open Chrome before running
 pagedown::chrome_print(input = tmp_html_cv_loc,
                        output = "cv.pdf",
                        browser = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
                        )
+
+# rmarkdown::render("cv.rmd",
+#                   output_format = "pdf_document",
+#                   params = list(pdf_mode = TRUE),
+#                   output_file = "cv_latex.pdf")
+
+# rmarkdown::render("cv.rmd",
+#                 #   output_format = "pdf_document",
+#                   params = list(pdf_mode = FALSE),
+#                   output_file = "cv-hans.md")

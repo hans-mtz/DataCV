@@ -15,6 +15,10 @@ output:
   pagedown::html_resume:
     css: ['dd_cv.css', 'resume']
     self_contained: true
+  pdf_document:
+    keep_tex: true
+  md_document:
+    variant: markdown_strict
 ---
 ---
 soft1: `r params$soft1`
