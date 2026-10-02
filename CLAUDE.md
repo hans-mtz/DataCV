@@ -32,14 +32,24 @@ Data-driven academic CV. Data lives in a **private** Google Sheet (or local CSVs
 
 `institution` is the employer/school for jobs and education, but the journal/institute for `academic_articles`, `working_papers`, `reports`; for those, `loc` holds coauthors.
 
+`language_skills` has an optional `type` column: `language` rows print as "Languages: Spanish (Native)"; blank/`software` rows are software, sorted by numeric level.
+
+The academic LaTeX header shows email, website, GitHub, LinkedIn, Twitter with `fontawesome5` icons.
+
 ## Versioning of content
 
-`entries` gets a `versions` column (e.g. `academic;industry`) and optional `priority`; `text_blocks` gets `versions` too. Each `.qmd` filters on its own version.
+`entries` has `in_resume` (master switch; FALSE hides everywhere), `versions` (`academic;industry;teaching` or `all`) and optional `priority` (ascending within a section, blanks last). `text_blocks` has a `version` column. Each `.qmd` filters on its own version. Press sections are excluded (in_resume FALSE).
 
 ## Design
 
 - Section titles: a single color for the whole title (currently accent `#1A4E8A`).
 - Planned at the end: a minimalist palette of base / accent / dominant colors, shared across all three versions.
+
+## Open items
+
+- Sheet: add `position` text blocks (headline under the name), language rows (`type` = language), clear course `description_1` that duplicates the date, fix `versions` value `research`.
+- Check Roboto / Source Sans fonts apply in the final Typst PDFs.
+- Last step: propose a minimalist base/accent/dominant palette shared by all three versions.
 
 ## Commands
 
