@@ -1,0 +1,40 @@
+---
+title-meta: "Curriculum Vitae"
+format:
+  pdf:
+    documentclass: article
+    pdf-engine: pdflatex
+    fontsize: 11pt
+    geometry: margin=1in
+    colorlinks: true
+    linkcolor: black
+    urlcolor: blue
+    include-in-header: ../templates/academic/header.tex
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+source("../R/cv_helpers.R")
+d <- cv_load()
+v <- "academic"
+author <- yaml::read_yaml("_author-academic.yml")$author
+```
+
+```{r}
+#| output: asis
+cv_emit(latex_header(author, contacts = c("envelope", "house", "github", "linkedin", "twitter")), "latex")
+cv_print_text(d, v, c("intro_academic", "intro"))
+
+cv_print_section(d, v, "education", "latex", "Education")
+cv_print_section(d, v, "working_papers", "latex", "Working Papers",
+                 details = TRUE, aside = "wp_aside")
+cv_print_section(d, v, "academic_articles", "latex", "Publications")
+cv_print_section(d, v, "reports", "latex", "Reports")
+cv_print_section(d, v, "research_positions", "latex", "Research Experience")
+cv_print_section(d, v, "teaching_positions", "latex", "Teaching Experience",
+                 aside = "teaching_experience_aside")
+cv_print_skills(d, "latex")
+```

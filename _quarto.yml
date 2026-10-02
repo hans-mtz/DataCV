@@ -1,0 +1,13 @@
+project:
+  type: default
+  output-dir: output
+  pre-render: Rscript R/prepare.R
+  render:
+    - cv/academic.qmd
+    - cv/industry.qmd
+    - cv/teaching.qmd
+
+execute:
+  echo: false
+  warning: false
+  message: false

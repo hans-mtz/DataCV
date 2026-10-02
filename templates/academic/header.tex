@@ -1,0 +1,17 @@
+% Design of the academic CV (adapted from Latex/stevewong_template.tex).
+% Pandoc already loads fontenc, inputenc, hyperref, xcolor and microtype.
+\usepackage{mathpazo}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*, itemsep=0.2em, topsep=0.2em}
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\large}{}{0pt}{}
+\pagestyle{empty}
+
+% Publication entry with a hanging indent
+\newcommand{\pub}[2]{\noindent\hangindent=1.5em\hangafter=1
+\textbf{#1}. #2\par}
+% Optional short abstract under a publication entry
+\newcommand{\pubabs}[1]{\vspace{-0.2em}\noindent\hangindent=1.5em\hangafter=1
+{\small \emph{Abstract:} #1}\par\vspace{0.4em}}

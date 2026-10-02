@@ -1,0 +1,118 @@
+\documentclass[11pt]{article}
+
+% All names, institutions, and research entries below are illustrative.
+% Replace them with your own information.
+
+% ====== BASIC SETUP ======
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo}
+\usepackage{microtype}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*, itemsep=0.2em, topsep=0.2em}
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\large}{}{0pt}{}
+\usepackage{fontawesome}
+\usepackage{parskip}
+\usepackage{xcolor}
+
+% Publication entry with a hanging indent
+\newcommand{\pub}[2]{\noindent\hangindent=1.5em\hangafter=1
+\textbf{#1}. #2\par}
+% Optional short abstract under a publication entry
+\newcommand{\pubabs}[1]{\vspace{-0.2em}\noindent\hangindent=1.5em\hangafter=1
+{\small \emph{Abstract:} #1}\par\vspace{0.4em}}
+
+
+\begin{document}
+
+\centerline{\huge \bf [Your Name]}
+\vspace{1mm}
+\centerline{\Large \bf Ph.D. Candidate in Economics}
+\vspace{1mm}
+\hrule
+\vspace{1mm}
+\centerline{Department of Economics, Example University (Sample City, USA)}
+\centerline{\faEnvelopeO \ \href{mailto:your.email@example.edu}{your.email@example.edu}
+\quad | \quad \href{https://example.com/your-name}{example.com/your-name}}
+\vspace{1mm}
+\hrule
+
+\section{{\Large R}ESEARCH INTERESTS}
+Labor Economics; Public Economics; Applied Microeconomics.
+
+\textbf{Software}: Stata, R, Python, Matlab, \LaTeX{}
+
+\section{{\Large E}MPLOYMENT}
+\textbf{Center for Economic Policy Research, Example University} \hfill Sample City, USA\\
+Graduate Research Fellow \hfill \emph{Sep 2023 -- Present}
+\begin{itemize}[leftmargin=*, label={}]
+  \item Support faculty research on labor markets and social insurance using linked administrative data.
+\end{itemize}
+
+\textbf{Policy Evaluation Lab} \hfill Capital City, USA\\
+Pre-doctoral Research Assistant \hfill \emph{Jul 2020 -- Jul 2022}
+
+\section{{\Large E}DUCATION}
+\textbf{Ph.D. in Economics}, Example University \hfill \emph{2022 -- 2027 (expected)}
+\begin{itemize}[leftmargin=*, label={}]
+  \item Dissertation: \textit{Essays on Labor Markets and Public Policy}
+  \item Committee: Prof. Jane Advisor (chair), Prof. Robin Scholar, Prof. Taylor Researcher
+\end{itemize}
+
+\textbf{M.Sc. in Economics}, Sample State University \hfill \emph{2018 -- 2020}
+
+\textbf{B.A. in Economics and Mathematics}, Sample College \hfill \emph{2014 -- 2018}
+
+\section{{\Large J}OB MARKET PAPER}
+\pub{Weather Risk and Worker Mobility}
+{Job market paper.}
+\pubabs{This paper studies how local weather shocks affect job transitions and geographic mobility. It combines administrative employment records with high-frequency weather data and uses an event-study design.}
+
+\section{{\Large P}UBLICATIONS}
+
+\pub{Childcare Access and Parental Employment}
+{(with Jamie Chen) \emph{Journal Name}, forthcoming.}
+
+\section{{\Large W}ORKING PAPERS}
+\pub{Public Transit and Access to Work}
+{(with Sam Lee) Revise and resubmit at \emph{Journal Name}.}
+
+\pub{Income Support after Job Loss}
+{Working paper.}
+
+\section{{\Large T}EACHING}
+\textbf{Example University} \hfill Sample City, USA\\
+Instructor, Intermediate Microeconomics \hfill \emph{Spring 2025}\\
+Teaching Assistant, Econometrics I \hfill \emph{Fall 2023, Fall 2024}
+\begin{itemize}[leftmargin=*, label={}]
+  \item Prepared problem sets, led weekly sections, and held office hours for undergraduate students.
+\end{itemize}
+
+\section{{\Large R}ESEARCH ASSISTANCE}
+\textbf{Research assistant to Prof. Jane Advisor}, Example University \hfill \emph{2022 -- 2024}
+
+\section{{\Large P}ROFESSIONAL ACTIVITIES}
+\textbf{Presentations:} Annual Meeting of Example Economists (2025); Sample University Applied Microeconomics Workshop (2024)
+
+\textbf{Service:} Graduate student seminar organizer (2024--2025)
+
+\section{{\Large R}EFERENCES}
+\begin{itemize}[leftmargin=*, label={}]
+  \item \textbf{Prof. Jane Advisor} (Ph.D. Supervisor), Example University \\
+  \href{mailto:jane.advisor@example.edu}{jane.advisor@example.edu}
+  \item \textbf{Prof. Second Advisor} (RA supervisor, Co-author), Template University \\
+  \href{mailto:second.advisor@example.edu}{second.advisor@example.edu}
+\end{itemize}
+
+\section{{\Large S}KILLS}
+\begin{itemize}
+  \item \textbf{Data}: Administrative records, household surveys, geospatial data
+  \item \textbf{Languages}: English (native); French (B2/professional proficiency)
+\end{itemize}
+
+\end{document}

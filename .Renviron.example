@@ -1,0 +1,16 @@
+# Copy to .Renviron (gitignored) and fill in. Restart R afterwards.
+
+# ID of your Google Sheet: the long string in
+# https://docs.google.com/spreadsheets/d/<THIS PART>/edit
+CV_SHEET_ID=
+
+# Google account that owns/can read the sheet
+CV_EMAIL=
+
+# Shown in the CV header
+CV_FIRSTNAME=
+CV_LASTNAME=
+CV_ADDRESS=
+
+# Optional: read CSVs from another folder instead of data/ (or data/example/)
+# CV_DATA_DIR=
