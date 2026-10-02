@@ -36,6 +36,10 @@ Data-driven academic CV. Data lives in a **private** Google Sheet (or local CSVs
 
 The academic LaTeX header shows email, website, GitHub, LinkedIn, Twitter with `fontawesome5` icons.
 
+`text_blocks` `fields` / `subfields` make the "Research Interests" section of the academic CV (omitted if empty).
+
+`conferences` rows (title = paper, tag = Presenter/Discussant, institution = conference, end = year) print as a section that appears only if it has entries. `work_in_progress` rows print as a titles-only list (coauthors from `loc`); their `description_*` cells are a hidden bank and are not printed.
+
 `references` section rows are people (title = name, description_1 = role, institution = affiliation, url = email), shown in a 2-column grid. `tag` (optional column) marks an entry, e.g. "Job Market Paper". `description_*` cells may start with `[[versions]]` or `[[!version]]` to show/hide that bullet per CV. Working paper descriptions are printed as abstracts at the end of the academic CV (Markdown, citations allowed); the citation list is titled "Bibliography" and printed last.
 
 ## Versioning of content

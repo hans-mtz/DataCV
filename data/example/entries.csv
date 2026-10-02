@@ -18,3 +18,7 @@ TRUE,academic,references,3,Prof. Robin Scholar,Sample State University,,,,robin.
 TRUE,academic,references,4,Dr. Taylor Researcher,Example Policy Institute,,,,taylor.researcher@example.org,,Co-author,,,,,
 TRUE,academic,working_papers,2,Public Transit and Access to Work,Working paper,with Sam Lee,,2025,https://example.com/transit,,This paper studies how new transit lines change job access for low-income workers.,,,,,
 TRUE,academic;teaching,references,5,Prof. Pat Director,Example University,,,,pat.director@example.edu,,Placement director,,,,,
+TRUE,academic,work_in_progress,1,Search Frictions in International Trade,,,,,,,Hidden bank text: abstract or notes are kept here and are not printed.,,,,,
+TRUE,academic,work_in_progress,2,Complements or Substitutes in Health Care Demand,,with Sam Lee,,,,,,,,,,
+TRUE,academic,conferences,1,Public Transit and Access to Work,Example Annual Meeting of Economists,with Sam Lee,,2025,,Presenter,,,,,,
+TRUE,academic,conferences,2,Childcare Access and Parental Employment,Sample Applied Microeconomics Workshop,,,2024,,Discussant,,,,,,
