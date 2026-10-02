@@ -8,7 +8,7 @@
 CV_VERSIONS <- c("academic", "industry", "teaching")
 
 # Sections rendered as publications (title + venue + coauthors) vs positions
-PUB_SECTIONS <- c("academic_articles", "working_papers", "reports")
+PUB_SECTIONS <- c("academic_articles", "working_papers", "reports", "work_in_progress", "conferences")
 
 # ---- Paths and loading -------------------------------------------------------
 
@@ -349,6 +349,20 @@ cv_print_section <- function(d, version, sections, engine, title = NULL,
   if (!is.null(aside)) cv_print_text(d, version, aside)
   lines <- if (engine == "typst") typst_section(e, details, version) else latex_section(e, details, version)
   cv_emit(lines, engine)
+}
+
+# Research interests: text blocks `fields` (major fields), `subfields` (specializations)
+# and `teaching_fields`, e.g. "Industrial Organization; Public Economics". Printed only
+# if at least one is set for the version.
+cv_print_fields <- function(d, version, engine, title = "Research Interests") {
+  major <- cv_text(d, version, "fields")
+  sub <- cv_text(d, version, "subfields")
+  teach <- cv_text(d, version, "teaching_fields")
+  if (is.na(major) && is.na(sub) && is.na(teach)) return(invisible())
+  cv_heading(title, engine)
+  if (!is.na(major)) cat("\n**Fields:** ", major, "\n", sep = "")
+  if (!is.na(sub)) cat("\n**Subfields:** ", sub, "\n", sep = "")
+  if (!is.na(teach)) cat("\n**Teaching:** ", teach, "\n", sep = "")
 }
 
 cv_print_skills <- function(d, engine, title = "Skills") {

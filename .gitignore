@@ -13,6 +13,7 @@
 
 # Personal data and outputs (only data/example/ is committed)
 data/*
+.claude/
 !data/example/
 !data/example/**
 output/
