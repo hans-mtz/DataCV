@@ -16,11 +16,23 @@ fetch_cv_data <- function(out_dir = "data") {
   googlesheets4::gs4_auth(email = if (email == "") TRUE else email)
   dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
+  # Read every tab first, so a failure (e.g. a rate limit) leaves data/ untouched.
+  # skip = 1: the first row of each tab is a human-readable note.
+  data <- lapply(setNames(tabs, tabs), function(tab) {
+    googlesheets4::read_sheet(sheet_id, sheet = tab, skip = 1, col_types = "c")
+  })
+
+  # Only rewrite files whose content changed, so `make` can tell nothing happened.
   for (tab in tabs) {
-    # skip = 1: the first row of each tab is a human-readable note
-    df <- googlesheets4::read_sheet(sheet_id, sheet = tab, skip = 1, col_types = "c")
-    readr::write_csv(df, file.path(out_dir, paste0(tab, ".csv")))
-    message("Wrote ", file.path(out_dir, paste0(tab, ".csv")), " (", nrow(df), " rows)")
+    dest <- file.path(out_dir, paste0(tab, ".csv"))
+    tmp <- tempfile(fileext = ".csv")
+    readr::write_csv(data[[tab]], tmp)
+    if (file.exists(dest) && tools::md5sum(dest) == tools::md5sum(tmp)) {
+      message("Unchanged: ", dest)
+    } else {
+      file.copy(tmp, dest, overwrite = TRUE)
+      message("Updated:   ", dest, " (", nrow(data[[tab]]), " rows)")
+    }
   }
   invisible(out_dir)
 }

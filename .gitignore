@@ -37,3 +37,4 @@ testing/*
 cv/_author-*.yml
 
 **/*.quarto_ipynb
+*.log

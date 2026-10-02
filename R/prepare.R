@@ -26,6 +26,9 @@ env_or <- function(name, default) {
   if (v == "") default else v
 }
 
+# Bibliography for citations in text blocks, if the data folder has one
+bib <- file.path(cv_data_dir(), "references.bib")
+
 for (v in CV_VERSIONS) {
   pos <- cv_text(d, v, "position")
   author <- list(
@@ -35,6 +38,11 @@ for (v in CV_VERSIONS) {
     position = if (is.na(pos)) "" else pos,
     contacts = lapply(contacts, function(x) x[c("icon", "text", "url")])
   )
-  yaml::write_yaml(list(author = author), file.path("cv", paste0("_author-", v, ".yml")))
+  meta <- list(author = author)
+  # only the academic CV cites; path relative to cv/ (must be inside the project)
+  if (v == "academic" && file.exists(bib)) {
+    meta$bibliography <- paste0("../", sub(paste0("^", normalizePath("."), "/"), "", normalizePath(bib)))
+  }
+  yaml::write_yaml(meta, file.path("cv", paste0("_author-", v, ".yml")))
 }
 message("Wrote cv/_author-*.yml from ", cv_data_dir())

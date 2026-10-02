@@ -1,5 +1,7 @@
 ---
 title-meta: "Curriculum Vitae"
+metadata-files:
+  - _author-academic.yml
 format:
   pdf:
     documentclass: article
@@ -30,11 +32,14 @@ cv_print_text(d, v, c("intro_academic", "intro"))
 
 cv_print_section(d, v, "education", "latex", "Education")
 cv_print_section(d, v, "working_papers", "latex", "Working Papers",
-                 details = TRUE, aside = "wp_aside")
+                 aside = "wp_aside")
 cv_print_section(d, v, "academic_articles", "latex", "Publications")
 cv_print_section(d, v, "reports", "latex", "Reports")
 cv_print_section(d, v, "research_positions", "latex", "Research Experience")
 cv_print_section(d, v, "teaching_positions", "latex", "Teaching Experience",
                  aside = "teaching_experience_aside")
+cv_print_section(d, v, "references", "latex", "References")
 cv_print_skills(d, "latex")
+cv_print_abstracts(d, v, "working_papers", "latex", "Abstracts")
+cv_print_refs("latex")
 ```

@@ -36,6 +36,8 @@ Data-driven academic CV. Data lives in a **private** Google Sheet (or local CSVs
 
 The academic LaTeX header shows email, website, GitHub, LinkedIn, Twitter with `fontawesome5` icons.
 
+`references` section rows are people (title = name, description_1 = role, institution = affiliation, url = email), shown in a 2-column grid. `tag` (optional column) marks an entry, e.g. "Job Market Paper". `description_*` cells may start with `[[versions]]` or `[[!version]]` to show/hide that bullet per CV. Working paper descriptions are printed as abstracts at the end of the academic CV (Markdown, citations allowed); the citation list is titled "Bibliography" and printed last.
+
 ## Versioning of content
 
 `entries` has `in_resume` (master switch; FALSE hides everywhere), `versions` (`academic;industry;teaching` or `all`) and optional `priority` (ascending within a section, blanks last). `text_blocks` has a `version` column. Each `.qmd` filters on its own version. Press sections are excluded (in_resume FALSE).
