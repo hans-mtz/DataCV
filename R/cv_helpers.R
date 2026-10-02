@@ -43,6 +43,7 @@ cv_load <- function(dir = cv_data_dir()) {
                     show_col_types = FALSE)
   }
   entries <- rd("entries.csv")
+  for (col in c("tag", "url")) if (!col %in% names(entries)) entries[[col]] <- NA_character_
   entries$.row <- seq_len(nrow(entries))
   entries$in_resume <- toupper(trimws(entries$in_resume)) %in% "TRUE"
   entries$priority <- suppressWarnings(as.numeric(entries$priority))
@@ -151,9 +152,28 @@ cv_date <- function(start, end) {
 # "with A. Author" -> "(with A. Author)" for LaTeX publication lines
 wrap_with <- function(x) if (!blank(x) && grepl("^with\\b", x)) paste0("(", x, ")") else x
 
-details_of <- function(row) {
+# Reference person: title = name, description_1 = role, institution = affiliation,
+# url = email (with or without "mailto:")
+ref_email <- function(r) if (blank(r$url)) NA_character_ else sub("^mailto:", "", r$url)
+
+# A bullet can be limited to some CVs with a prefix: "[[academic;teaching]] text"
+# shows it only there; "[[!industry]] text" hides it from the industry CV.
+# Bullets without a prefix appear in every version.
+tag_applies <- function(tag, version) {
+  tok <- parse_versions(tag)[[1]]
+  neg <- grepl("^!", tok)
+  if (any(neg)) return(!(version %in% sub("^!", "", tok[neg])))
+  any(tok %in% c(version, "all"))
+}
+
+details_of <- function(row, version = NULL) {
   v <- unlist(row[paste0("description_", 1:6)], use.names = FALSE)
-  v[!blank(v)]
+  v <- v[!blank(v)]
+  if (is.null(version) || !length(v)) return(v)
+  pat <- "^\\s*\\[\\[([^]]*)\\]\\]\\s*"
+  tag <- ifelse(grepl(pat, v), sub(paste0(pat, ".*"), "\\1", v), NA_character_)
+  keep <- vapply(tag, function(t) is.na(t) || tag_applies(t, version), logical(1))
+  sub(pat, "", v[keep])
 }
 
 # ---- Typst -------------------------------------------------------------------
@@ -171,14 +191,32 @@ typst_entry <- function(title, location, date, description, details = character(
   out
 }
 
-typst_section <- function(e, details = FALSE) {
+typst_references <- function(e) {
+  m <- function(x) md_inline(x, "typst")
+  cell <- function(r) {
+    email <- ref_email(r)
+    parts <- c(sprintf("#strong[%s]", m(r$title)),
+               if (!blank(r$description_1)) m(r$description_1),
+               if (!blank(r$institution)) m(r$institution),
+               if (!is.na(email)) sprintf('#link("mailto:%s")[%s]', email, esc_typst(email)))
+    paste0("[", paste(parts, collapse = " \\\n"), "]")
+  }
+  paste0("#resume-item[\n#pad(top: 0.4em)[#grid(columns: (1fr, 1fr), row-gutter: 1em,\n",
+         paste(vapply(seq_len(nrow(e)), function(i) cell(e[i, ]), ""), collapse = ",\n"),
+         ",\n)]\n]")
+}
+
+typst_section <- function(e, details = FALSE, version = NULL) {
+  if (all(e$section == "references")) return(typst_references(e))
   vapply(seq_len(nrow(e)), function(i) {
     r <- e[i, ]
-    d <- if (details || !(r$section %in% PUB_SECTIONS)) details_of(r) else character()
+    d <- if (details || !(r$section %in% PUB_SECTIONS)) details_of(r, version) else character()
     if (r$section %in% PUB_SECTIONS) {
       title <- if (!blank(r$url)) sprintf("[%s](%s)", r$title, r$url) else r$title
       venue <- if (!blank(r$institution)) paste0("*", r$institution, "*") else ""
-      typst_entry(title, venue, cv_date(NA, r$end), r$loc, d, as_list = FALSE)
+      who <- paste(c(if (!blank(r$tag)) paste0("(", r$tag, ")"),
+                     if (!blank(r$loc)) r$loc), collapse = " ")
+      typst_entry(title, venue, cv_date(NA, r$end), who, d, as_list = FALSE)
     } else {
       typst_entry(r$title, r$loc, cv_date(r$start, r$end), r$institution, d)
     }
@@ -189,23 +227,48 @@ typst_section <- function(e, details = FALSE) {
 
 latex_bullets <- function(details) {
   if (!length(details)) return(character())
-  c("\\begin{itemize}",
+  # blank line ends the entry line; -\parskip cancels the gap before the list
+  c("", "\\vspace{-\\parskip}", "\\begin{itemize}",
     paste0("  \\item ", vapply(details, md_inline, "", engine = "latex")),
     "\\end{itemize}")
 }
 
-latex_section <- function(e, details = FALSE) {
+latex_references <- function(e) {
+  m <- function(x) md_inline(x, "latex")
+  person <- function(r) {
+    email <- ref_email(r)
+    parts <- c(sprintf("\\textbf{%s}", m(r$title)),
+               if (!blank(r$description_1)) m(r$description_1),
+               if (!blank(r$institution)) m(r$institution),
+               if (!is.na(email)) sprintf("\\href{mailto:%s}{%s}", gsub("([%#])", "\\\\\\1", email), esc_latex(email)))
+    paste(parts, collapse = "\\\\\n")
+  }
+  box <- function(r) sprintf("\\begin{minipage}[t]{0.48\\textwidth}\n%s\n\\end{minipage}", person(r))
+  unlist(lapply(seq(1, nrow(e), by = 2), function(i) {
+    left <- box(e[i, ])
+    right <- if (i < nrow(e)) paste0("\\hfill\n", box(e[i + 1, ]))
+    c(paste0("\\noindent", left, right), "\\vspace{0.6em}", "")
+  }))
+}
+
+latex_section <- function(e, details = FALSE, version = NULL) {
   if (!nrow(e)) return(character())
+  if (all(e$section == "references")) return(latex_references(e))
   m <- function(x) md_inline(x, "latex")
   if (all(e$section %in% PUB_SECTIONS)) {
     return(unlist(lapply(seq_len(nrow(e)), function(i) {
       r <- e[i, ]
       title <- if (!blank(r$url)) sprintf("[%s](%s)", r$title, r$url) else r$title
-      rest <- paste(c(if (!blank(r$loc)) m(wrap_with(r$loc)),
-                      if (!blank(r$institution)) paste0("\\emph{", m(r$institution), "}"),
-                      if (!blank(r$end)) m(r$end)), collapse = ", ")
-      out <- sprintf("\\pub{%s}{%s.}", m(title), rest)
-      d <- details_of(r)
+      parts <- c(if (!blank(r$loc)) m(wrap_with(r$loc)),
+                 if (!blank(r$institution)) paste0("\\emph{", m(r$institution), "}"),
+                 if (!blank(r$end)) m(r$end))
+      body <- if (length(parts)) paste0(sub("\\.$", "", paste(parts, collapse = ", ")), ".") else ""
+      lead <- if (!blank(r$tag)) paste0("(", m(r$tag), ")")
+      rest <- paste(c(lead, body[body != ""]), collapse = " ")
+      # the title ends with a period unless it already ends with ? ! or .
+      head <- paste0(m(title), if (grepl("[.?!]$", trimws(r$title))) "" else ".")
+      out <- sprintf("\\pub{%s}{%s}", head, rest)
+      d <- details_of(r, version)
       if (details && length(d)) out <- c(out, sprintf("\\pubabs{%s}", m(paste(d, collapse = " "))))
       out
     })))
@@ -216,7 +279,7 @@ latex_section <- function(e, details = FALSE) {
       c(sprintf("\\textbf{%s}%s \\hfill \\emph{%s}", m(r$title),
                 if (!blank(r$institution)) paste0(", ", m(r$institution)) else "",
                 m(cv_date(r$start, r$end))),
-        latex_bullets(details_of(r)), "")
+        latex_bullets(details_of(r, version)), "")
     })))
   }
   # Positions: group rows of the same institution under one heading
@@ -226,9 +289,10 @@ latex_section <- function(e, details = FALSE) {
     head <- sprintf("\\textbf{%s} \\hfill %s\\\\", m(inst), if (is.na(loc)) "" else m(loc))
     rows <- unlist(lapply(seq_len(nrow(g)), function(i) {
       r <- g[i, ]
+      bullets <- details_of(r, version)
       c(sprintf("%s \\hfill \\emph{%s}%s", m(r$title), m(cv_date(r$start, r$end)),
-                if (i < nrow(g) || length(details_of(r))) "\\\\" else ""),
-        latex_bullets(details_of(r)))
+                if (i < nrow(g) && !length(bullets)) "\\\\" else ""),
+        latex_bullets(bullets))
     }))
     c(head, rows, "")
   }))
@@ -283,7 +347,7 @@ cv_print_section <- function(d, version, sections, engine, title = NULL,
   if (!nrow(e)) return(invisible())
   if (!is.null(title)) cv_heading(title, engine)
   if (!is.null(aside)) cv_print_text(d, version, aside)
-  lines <- if (engine == "typst") typst_section(e, details) else latex_section(e, details)
+  lines <- if (engine == "typst") typst_section(e, details, version) else latex_section(e, details, version)
   cv_emit(lines, engine)
 }
 
@@ -294,6 +358,35 @@ cv_print_skills <- function(d, engine, title = "Skills") {
   cv_heading(title, engine)
   if (!is.na(sw)) cat("\n**Software:** ", sw, "\n", sep = "")
   if (!is.na(lang)) cat("\n**Languages:** ", lang, "\n", sep = "")
+}
+
+# Abstracts for the end of the CV. Each entry's description_1..6 (after
+# version filtering) become paragraphs under the entry's title, printed as
+# Markdown so Pandoc resolves citations ([@key]) with the bibliography found by
+# R/prepare.R (references.bib next to the CSVs). Single line breaks inside a cell
+# become paragraph breaks. If anything is cited, cv_print_refs() prints the list.
+.cv_state <- new.env()
+
+cv_print_abstracts <- function(d, version, sections, engine, title = "Abstracts") {
+  e <- cv_entries(d, version, sections)
+  blocks <- lapply(seq_len(nrow(e)), function(i) {
+    r <- e[i, ]
+    paras <- details_of(r, version)
+    if (!length(paras)) return(NULL)
+    head <- paste0("**", r$title, "**", if (!blank(r$tag)) paste0(" (", r$tag, ")"))
+    paste(c(head, gsub("\n+", "\n\n", paras)), collapse = "\n\n")
+  })
+  blocks <- Filter(Negate(is.null), blocks)
+  if (!length(blocks)) return(invisible())
+  cv_heading(title, engine)
+  cat("\n", paste(blocks, collapse = "\n\n"), "\n", sep = "")
+  if (any(grepl("@", unlist(blocks), fixed = TRUE))) .cv_state$cited <- TRUE
+}
+
+cv_print_refs <- function(engine, title = "Bibliography") {
+  if (!isTRUE(.cv_state$cited)) return(invisible())
+  cv_heading(title, engine)
+  cat("\n::: {#refs}\n:::\n")
 }
 
 # Free text (intro, asides) is plain Markdown that Pandoc converts itself.

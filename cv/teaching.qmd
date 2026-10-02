@@ -39,5 +39,6 @@ cv_print_section(d, v, "education", "typst", "Education")
 cv_print_section(d, v, "research_positions", "typst", "Research Experience")
 cv_print_section(d, v, c("reports", "academic_articles", "working_papers"), "typst",
                  "Research")
+cv_print_section(d, v, "references", "typst", "References")
 cv_print_skills(d, "typst")
 ```

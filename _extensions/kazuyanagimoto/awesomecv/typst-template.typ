@@ -305,7 +305,7 @@
     fill: color-darknight,
   )
   set par(leading: 0.65em)
-  set list(indent: 1em)
+  set list(indent: 1em, spacing: 0.4em)
   body
 }
 

@@ -32,8 +32,10 @@ This renders all three versions from the fake data in `data/example/`.
    ```r
    readRenviron(".Renviron"); source("R/fetch_data.R"); fetch_cv_data()
    ```
-3. From then on, refresh the data with `make fetch`, which writes `data/*.csv` (gitignored).
-4. Render with `make academic`, `make industry`, `make teaching`, or `make all`.
+3. Render with `make academic`, `make industry`, `make teaching`, or `make all`. These use the CSVs already in `data/` and only rebuild what changed.
+4. Pull the latest sheet with `make fetch`, or do both in one go: `make academic FETCH=1`. `fetch` leaves `data/` untouched if Google fails (for example a rate limit) and only rewrites files that changed.
+
+While tuning the layout, `quarto preview cv/academic.qmd` re-renders the PDF in your browser each time you save the `.qmd`. It does not see sheet edits, so use `make academic FETCH=1` for content changes.
 
 No sheet? Put your own CSVs in `data/` with the same columns as `data/example/`. If `data/entries.csv` exists it is used; otherwise the example data is used. Add `DATA=example` to any command to force the example data.
 
@@ -45,16 +47,26 @@ No sheet? Put your own CSVs in `data/` with the same columns as `data/example/`.
 |---|---|
 | `in_resume` | `TRUE`/`FALSE` master switch. `FALSE` hides the row everywhere. |
 | `versions` | Which CVs show the row: `academic`, `industry`, `teaching`, or `all`. Separate several with `;`. |
-| `section` | `education`, `research_positions`, `industry_positions`, `teaching_positions`, `academic_articles`, `working_papers`, `reports` |
+| `section` | `education`, `research_positions`, `industry_positions`, `teaching_positions`, `academic_articles`, `working_papers`, `reports`, `references` |
 | `priority` | Optional number. Within a section, lower numbers come first; blanks follow in sheet order. |
-| `title`, `institution`, `loc`, `start`, `end`, `url` | For jobs and education: `institution` is the employer or school and `loc` the city. For papers and reports: `institution` is the journal or institute and `loc` the coauthors (`with A. Author`). |
+| `title`, `institution`, `loc`, `start`, `end`, `url`, `tag` | For jobs and education: `institution` is the employer or school and `loc` the city. For papers and reports: `institution` is the journal or institute and `loc` the coauthors (`with A. Author`). |
 | `description_1` ... `description_6` | Bullet points (or the abstract for working papers). |
 
 `text_blocks.csv` has `version`, `loc`, `text`. Used keys: `intro` (or `intro_academic`, `intro_industry`, `intro_teaching`), `position` (the headline under your name), and the section asides `industry_experience_aside`, `publications_aside`, `wp_aside`, `teaching_experience_aside`.
 
 `contact_info.csv` has `loc`, `icon`, `contact` (`[text](url)`). `language_skills.csv` has `skill`, `level`.
 
-Text fields accept light Markdown: `*italic*`, `**bold**`, `[text](url)`.
+**References (people).** Use `section` = `references`, one row per person: `title` = name, `description_1` = role (e.g. Ph.D. supervisor), `institution` = affiliation, `url` = email. They print in a two-column grid, ordered by `priority`, and `versions` decides which CVs list them. The bibliography of the abstract citations is a separate list at the end, titled "Bibliography".
+
+Text fields accept light Markdown: `*italic*`, `**bold**`, `[text](url)` (no nesting like `***both***`).
+
+**Abstracts at the end (academic CV).** The `description_*` cells of a `working_papers` row are printed as paragraphs under the paper's title in an "Abstracts" section at the end. Single line breaks inside a cell become new paragraphs. They can cite with `[@key]`, `@key` or `[@a; @b]`, using `data/references.bib` (BibTeX, gitignored); the cited works are listed in a "Bibliography" at the very end, only if something is cited. To change the citation style, add `csl: your-style.csl` to `cv/academic.qmd`.
+
+**Job market paper.** Make it a `working_papers` row, put `Job Market Paper` in the `tag` column and `1` in `priority`. The tag prints in bold in the list of working papers and next to the title in the abstracts. Any entry can have a tag.
+
+**Bullets only in some versions.** Start a `description_*` cell with `[[academic;teaching]] text` to show it only in those CVs, or `[[!industry]] text` to hide it from the industry CV. Bullets with no prefix appear everywhere.
+
+**References (people).** Use `section` = `references`, one row per person: `title` = name, `description_1` = role (e.g. Ph.D. supervisor, Placement director), `institution` = affiliation, `url` = email. They print in a two-column grid, ordered by `priority`, and `versions` decides which CVs list them.
 
 ## Privacy
 
