@@ -26,6 +26,7 @@ Data-driven academic CV. Data lives in a **private** Google Sheet (or local CSVs
 - `_extensions/kazuyanagimoto/awesomecv`: Typst design, edited locally (single-color section titles; brand icon font falls back to Font Awesome 7)
 - `templates/academic/header.tex`: LaTeX design, from `Latex/stevewong_template.tex`
 - `data/example/`: fake CSVs so others can run the template
+- `data/WP/`: private and gitignored (research inventory, field matching, paste-ready files for the sheet); never committed
 - `archive/`: old R Markdown pipeline and Quarto experiments (gitignored, reference only)
 
 ## Data conventions
@@ -42,6 +43,8 @@ The academic LaTeX header shows email, website, GitHub, LinkedIn, Twitter with `
 
 `references` section rows are people (title = name, description_1 = role, institution = affiliation, url = email), shown in a 2-column grid. `tag` (optional column) marks an entry, e.g. "Job Market Paper". `description_*` cells may start with `[[versions]]` or `[[!version]]` to show/hide that bullet per CV. Working paper descriptions are printed as abstracts at the end of the academic CV (Markdown, citations allowed); the citation list is titled "Bibliography" and printed last.
 
+Academic CV section order: Research Interests (fields, subfields, teaching), Education, Working Papers, Publications, Reports, Work in Progress, Conferences, Teaching Experience, Research Experience, References, Skills, Abstracts, Bibliography. Section order lives in `cv/academic.qmd`. A `teaching_fields` text block adds a "Teaching" line under Research Interests.
+
 ## Versioning of content
 
 `entries` has `in_resume` (master switch; FALSE hides everywhere), `versions` (`academic;industry;teaching` or `all`) and optional `priority` (ascending within a section, blanks last). `text_blocks` has a `version` column. Each `.qmd` filters on its own version. Press sections are excluded (in_resume FALSE).
@@ -53,6 +56,7 @@ The academic LaTeX header shows email, website, GitHub, LinkedIn, Twitter with `
 
 ## Open items
 
+- Sheet: paste the TSV files from `data/WP` (working papers replace the existing job market and Cournot rows); add `fields`, `subfields`, `teaching_fields` text blocks and `data/references.bib`. RA bullets are tagged `[[!academic]]` so they show only in the other CVs.
 - Sheet: add `position` text blocks (headline under the name), language rows (`type` = language), clear course `description_1` that duplicates the date, fix `versions` value `research`.
 - Check Roboto / Source Sans fonts apply in the final Typst PDFs.
 - Last step: propose a minimalist base/accent/dominant palette shared by all three versions.

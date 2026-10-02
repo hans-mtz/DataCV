@@ -56,8 +56,6 @@ No sheet? Put your own CSVs in `data/` with the same columns as `data/example/`.
 
 `contact_info.csv` has `loc`, `icon`, `contact` (`[text](url)`). `language_skills.csv` has `skill`, `level`.
 
-**References (people).** Use `section` = `references`, one row per person: `title` = name, `description_1` = role (e.g. Ph.D. supervisor), `institution` = affiliation, `url` = email. They print in a two-column grid, ordered by `priority`, and `versions` decides which CVs list them. The bibliography of the abstract citations is a separate list at the end, titled "Bibliography".
-
 Text fields accept light Markdown: `*italic*`, `**bold**`, `[text](url)` (no nesting like `***both***`).
 
 **Abstracts at the end (academic CV).** The `description_*` cells of a `working_papers` row are printed as paragraphs under the paper's title in an "Abstracts" section at the end. Single line breaks inside a cell become new paragraphs. They can cite with `[@key]`, `@key` or `[@a; @b]`, using `data/references.bib` (BibTeX, gitignored); the cited works are listed in a "Bibliography" at the very end, only if something is cited. To change the citation style, add `csl: your-style.csl` to `cv/academic.qmd`.
@@ -70,7 +68,7 @@ Text fields accept light Markdown: `*italic*`, `**bold**`, `[text](url)` (no nes
 
 **Bullets only in some versions.** Start a `description_*` cell with `[[academic;teaching]] text` to show it only in those CVs, or `[[!industry]] text` to hide it from the industry CV. Bullets with no prefix appear everywhere.
 
-**References (people).** Use `section` = `references`, one row per person: `title` = name, `description_1` = role (e.g. Ph.D. supervisor, Placement director), `institution` = affiliation, `url` = email. They print in a two-column grid, ordered by `priority`, and `versions` decides which CVs list them.
+**References (people).** Use `section` = `references`, one row per person: `title` = name, `description_1` = role (e.g. Ph.D. supervisor, Placement director), `institution` = affiliation, `url` = email. They print in a two-column grid, ordered by `priority`, and `versions` decides which CVs list them. The citation list from abstracts is a separate list at the end, titled "Bibliography".
 
 ## Privacy
 
