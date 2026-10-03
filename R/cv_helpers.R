@@ -399,6 +399,8 @@ cv_print_abstracts <- function(d, version, sections, engine, title = "Abstracts"
 
 cv_print_refs <- function(engine, title = "Bibliography") {
   if (!isTRUE(.cv_state$cited)) return(invisible())
+  # the bibliography starts on a new page
+  cv_emit(if (engine == "typst") "#pagebreak()" else "\\newpage", engine)
   cv_heading(title, engine)
   cat("\n::: {#refs}\n:::\n")
 }
