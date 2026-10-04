@@ -39,3 +39,8 @@ cv/_author-*.yml
 
 **/*.quarto_ipynb
 *.log
+
+# Local backup copies (not part of the project)
+DataCV-backup-*/
+DataCV-handoff/
+DataCV-local/
