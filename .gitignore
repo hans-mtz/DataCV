@@ -44,3 +44,6 @@ cv/_author-*.yml
 DataCV-backup-*/
 DataCV-handoff/
 DataCV-local/
+
+# Editor settings
+.vscode/
