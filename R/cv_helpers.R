@@ -228,9 +228,9 @@ typst_section <- function(e, details = FALSE, version = NULL) {
 latex_bullets <- function(details) {
   if (!length(details)) return(character())
   # blank line ends the entry line; -\parskip cancels the gap before the list
-  c("", "\\vspace{-\\parskip}", "\\begin{itemize}",
+  c("", "\\vspace{-\\parskip}", "{\\fontsize{8.8pt}{10.5pt}\\selectfont", "\\begin{itemize}",
     paste0("  \\item ", vapply(details, md_inline, "", engine = "latex")),
-    "\\end{itemize}")
+    "\\end{itemize}}")
 }
 
 latex_references <- function(e) {
@@ -243,11 +243,10 @@ latex_references <- function(e) {
                if (!is.na(email)) sprintf("\\href{mailto:%s}{%s}", gsub("([%#])", "\\\\\\1", email), esc_latex(email)))
     paste(parts, collapse = "\\\\\n")
   }
-  box <- function(r) sprintf("\\begin{minipage}[t]{0.48\\textwidth}\n%s\n\\end{minipage}", person(r))
-  unlist(lapply(seq(1, nrow(e), by = 2), function(i) {
-    left <- box(e[i, ])
-    right <- if (i < nrow(e)) paste0("\\hfill\n", box(e[i + 1, ]))
-    c(paste0("\\noindent", left, right), "\\vspace{0.6em}", "")
+  box <- function(r) sprintf("\\begin{minipage}[t]{0.31\\textwidth}\n%s\n\\end{minipage}", person(r))
+  unlist(lapply(seq(1, nrow(e), by = 3), function(i) {
+    boxes <- vapply(i:min(i + 2, nrow(e)), function(j) box(e[j, ]), "")
+    c(paste0("\\noindent", paste(boxes, collapse = "\\hfill\n")), "\\vspace{0.6em}", "")
   }))
 }
 
@@ -361,8 +360,9 @@ cv_print_fields <- function(d, version, engine, title = "Research Interests") {
   if (is.na(major) && is.na(sub) && is.na(teach)) return(invisible())
   cv_heading(title, engine)
   if (!is.na(major)) cat("\n**Fields:** ", major, "\n", sep = "")
-  if (!is.na(sub)) cat("\n**Subfields:** ", sub, "\n", sep = "")
-  if (!is.na(teach)) cat("\n**Teaching:** ", teach, "\n", sep = "")
+  tight <- function() if (engine == "latex") cat("\n\\vspace{-0.6em}\n")
+  if (!is.na(sub)) { if (!is.na(major)) tight(); cat("\n**Subfields:** ", sub, "\n", sep = "") }
+  if (!is.na(teach)) { if (!is.na(major) || !is.na(sub)) tight(); cat("\n**Teaching:** ", teach, "\n", sep = "") }
 }
 
 cv_print_skills <- function(d, engine, title = "Skills") {
@@ -371,6 +371,7 @@ cv_print_skills <- function(d, engine, title = "Skills") {
   if (is.na(sw) && is.na(lang)) return(invisible())
   cv_heading(title, engine)
   if (!is.na(sw)) cat("\n**Software:** ", sw, "\n", sep = "")
+  if (!is.na(sw) && !is.na(lang) && engine == "latex") cat("\n\\vspace{-0.6em}\n")
   if (!is.na(lang)) cat("\n**Languages:** ", lang, "\n", sep = "")
 }
 

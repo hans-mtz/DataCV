@@ -1,5 +1,6 @@
 ---
 title-meta: "Curriculum Vitae"
+suppress-bibliography: true
 metadata-files:
   - _author-academic.yml
 format:
@@ -12,6 +13,7 @@ format:
     linkcolor: black
     urlcolor: blue
     include-in-header: ../templates/academic/header.tex
+    keep-tex: true
 execute:
   echo: false
   warning: false
@@ -28,21 +30,21 @@ author <- yaml::read_yaml("_author-academic.yml")$author
 ```{r}
 #| output: asis
 cv_emit(latex_header(author, contacts = c("envelope", "house", "github", "linkedin", "twitter")), "latex")
-cv_print_text(d, v, c("intro_academic", "intro"))
+cv_print_text(d, v, c("intro_academic"))
 
 cv_print_fields(d, v, "latex")
 cv_print_section(d, v, "education", "latex", "Education")
 cv_print_section(d, v, "working_papers", "latex", "Working Papers",
                  aside = "wp_aside")
+cv_print_section(d, v, "work_in_progress", "latex", "Work in Progress")
 cv_print_section(d, v, "academic_articles", "latex", "Publications")
 cv_print_section(d, v, "reports", "latex", "Reports")
-cv_print_section(d, v, "work_in_progress", "latex", "Work in Progress")
 cv_print_section(d, v, "conferences", "latex", "Conferences")
 cv_print_section(d, v, "teaching_positions", "latex", "Teaching Experience",
                  aside = "teaching_experience_aside")
 cv_print_section(d, v, "research_positions", "latex", "Research Experience")
-cv_print_section(d, v, "references", "latex", "References")
 cv_print_skills(d, "latex")
+cv_print_section(d, v, "references", "latex", "References")
+cv_emit("\\newpage", "latex")
 cv_print_abstracts(d, v, "working_papers", "latex", "Abstracts")
-cv_print_refs("latex")
 ```
