@@ -210,7 +210,7 @@ typst_section <- function(e, details = FALSE, version = NULL) {
   if (all(e$section == "references")) return(typst_references(e))
   vapply(seq_len(nrow(e)), function(i) {
     r <- e[i, ]
-    d <- if (details || !(r$section %in% PUB_SECTIONS)) details_of(r, version, version) else character()
+    d <- if (details || !(r$section %in% PUB_SECTIONS)) details_of(r, version) else character()
     if (r$section %in% PUB_SECTIONS) {
       title <- if (!blank(r$url)) sprintf("[%s](%s)", r$title, r$url) else r$title
       venue <- if (!blank(r$institution)) paste0("*", r$institution, "*") else ""
