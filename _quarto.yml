@@ -4,6 +4,7 @@ project:
   pre-render: Rscript R/prepare.R
   render:
     - cv/academic.qmd
+    - cv/abstracts.qmd
     - cv/industry.qmd
     - cv/teaching.qmd
 

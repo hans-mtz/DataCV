@@ -39,6 +39,7 @@ output/.data_dir: FORCE
 
 output/cv/academic.pdf: cv/academic.qmd templates/academic/header.tex $(COMMON)
 	quarto render cv/academic.qmd
+	quarto render cv/abstracts.qmd
 
 output/cv/industry.pdf: cv/industry.qmd $(TYPST) $(COMMON)
 	quarto render cv/industry.qmd
