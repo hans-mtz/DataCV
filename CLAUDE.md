@@ -18,7 +18,8 @@ Data-driven academic CV. Data lives in a **private** Google Sheet (or local CSVs
 
 ## Layout
 
-- `Makefile`: `make academic|industry|teaching|all|fetch|example|clean` (`DATA=example` forces the fake data)
+- `Makefile`: `make academic|industry|teaching|all|fetch|push|example|clean` (`DATA=example` forces the fake data)
+- `R/push_data.R`: `data/*.csv` -> sheet, cell by cell, only cells that differ (dry run unless `--apply`; rows must match the sheet one to one)
 - `R/fetch_data.R`: sheet -> `data/*.csv` (tabs: `entries`, `language_skills`, `text_blocks`, `contact_info`; first row of each tab is a note, so `skip = 1`)
 - `R/prepare.R`: Quarto pre-render; writes `cv/_author-<version>.yml` (name, address from `.Renviron`; contacts from data; headline from text block `position`)
 - `R/cv_helpers.R`: filters entries by `in_resume` + `versions` (`all` = every version), sorts by `priority`, emits Typst or LaTeX; light Markdown in text fields
@@ -36,6 +37,8 @@ Data-driven academic CV. Data lives in a **private** Google Sheet (or local CSVs
 `language_skills` has an optional `type` column: `language` rows print as "Languages: Spanish (Native)"; blank/`software` rows are software, sorted by numeric level.
 
 The academic LaTeX header shows email, website, GitHub, LinkedIn, Twitter with `fontawesome5` icons.
+
+Industry CV (one page): `compact = TRUE` in `cv_print_section()` gives one-line entry headers and one-line publications; `cv_print_skill_grid()` prints the `core_skills` text block (one "Label: items" group per line) plus software and languages in two columns. Industry-only bullets use `[[industry]]`; the Western RA work is merged into the "Graduate Research Assistant" row, and the per-project RA rows are teaching-only. The Typst CVs show `CV_CITY` (fallback `CV_ADDRESS`) in the contact line instead of an address line.
 
 `text_blocks` `fields` / `subfields` make the "Research Interests" section of the academic CV (omitted if empty).
 
@@ -57,13 +60,14 @@ Academic CV section order: Research Interests (fields, subfields, teaching), Edu
 ## Open items
 
 - Sheet: paste the TSV files from `data/WP` (working papers replace the existing job market and Cournot rows); add `fields`, `subfields`, `teaching_fields` text blocks and `data/references.bib`. RA bullets are tagged `[[!academic]]` so they show only in the other CVs.
-- Sheet: add `position` text blocks (headline under the name), language rows (`type` = language), clear course `description_1` that duplicates the date, fix `versions` value `research`.
+- Sheet: add `position` text blocks (headline under the name), language rows (`type` = language), clear course `description_1` that duplicates the date.
 - Check Roboto / Source Sans fonts apply in the final Typst PDFs.
 - Last step: propose a minimalist base/accent/dominant palette shared by all three versions.
 
 ## Commands
 
 - Fetch data: `Rscript R/fetch_data.R`
+- Push local CSV edits to the sheet: `make push` (dry run), then `make push APPLY=1`
 - Render: `make academic` (or `industry`, `teaching`, `all`)
 - Check setup: `quarto check` (Quarto >= 1.4 for Typst; TinyTeX for LaTeX)
 

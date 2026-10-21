@@ -2,8 +2,10 @@
 # (gitignored) with name, position and contact links built from the data, so
 # no personal details are typed in the .qmd files.
 #
-# Name and address come from .Renviron (CV_FIRSTNAME, CV_LASTNAME, CV_ADDRESS);
-# the headline per version comes from a text block with loc = "position".
+# Name and address come from .Renviron (CV_FIRSTNAME, CV_LASTNAME, CV_ADDRESS,
+# CV_CITY); the headline per version comes from a text block with loc = "position".
+# The academic CV prints the full address on its own line; the Typst CVs put the
+# city (CV_CITY, or CV_ADDRESS if unset) in the contact line with a location icon.
 
 source("R/cv_helpers.R")
 cv_load_env()
@@ -29,14 +31,20 @@ env_or <- function(name, default) {
 # Bibliography for citations in text blocks, if the data folder has one
 bib <- file.path(cv_data_dir(), "references.bib")
 
+address <- env_or("CV_ADDRESS", "")
+city <- env_or("CV_CITY", address)
+
 for (v in CV_VERSIONS) {
   pos <- cv_text(d, v, "position")
+  cts <- lapply(contacts, function(x) x[c("icon", "text", "url")])
+  inline <- v != "academic" && city != ""
+  if (inline) cts <- c(list(list(icon = "fa location-dot", text = city, url = "")), cts)
   author <- list(
     firstname = env_or("CV_FIRSTNAME", "Your"),
     lastname = env_or("CV_LASTNAME", "Name"),
-    address = env_or("CV_ADDRESS", ""),
+    address = if (inline) "" else address,
     position = if (is.na(pos)) "" else pos,
-    contacts = lapply(contacts, function(x) x[c("icon", "text", "url")])
+    contacts = cts
   )
   meta <- list(author = author)
   # only the academic CV cites; path relative to cv/ (must be inside the project)

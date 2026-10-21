@@ -8,7 +8,7 @@ format:
     documentclass: article
     pdf-engine: pdflatex
     fontsize: 11pt
-    geometry: margin=1in
+    geometry: margin=0.7in
     colorlinks: true
     linkcolor: black
     urlcolor: blue
@@ -30,7 +30,7 @@ author <- yaml::read_yaml("_author-academic.yml")$author
 ```{r}
 #| output: asis
 cv_emit(latex_header(author, contacts = c("envelope", "house", "github", "linkedin", "twitter")), "latex")
-cv_print_text(d, v, c("intro_academic"))
+# cv_print_text(d, v, c("intro_academic"))
 
 # cv_print_fields(d, v, "latex")
 # cv_print_section(d, v, "education", "latex", "Education")

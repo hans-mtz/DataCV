@@ -30,15 +30,13 @@ v <- "industry"
 
 ```{r}
 #| output: asis
+cv_emit("#set text(size: 10pt)", "typst")  # smaller body text to fit one page
 cv_heading("Summary", "typst")
 cv_print_text(d, v, c("intro_industry", "intro"))
-
-cv_print_section(d, v, "industry_positions", "typst", "Industry Experience",
-                 aside = "industry_experience_aside")
-cv_print_section(d, v, "research_positions", "typst", "Research Experience")
-cv_print_section(d, v, "education", "typst", "Education")
+cv_print_skill_grid(d, v)
+cv_print_section(d, v, "industry_positions", "typst", "Professional Experience", compact = TRUE)
+cv_print_section(d, v, "research_positions", "typst", "Research Experience", compact = TRUE)
+cv_print_section(d, v, "education", "typst", "Education", compact = TRUE)
 cv_print_section(d, v, c("reports", "academic_articles", "working_papers"), "typst",
-                 "Selected Publications and Reports", aside = "publications_aside")
-cv_print_section(d, v, "references", "typst", "References")
-cv_print_skills(d, "typst")
+                 "Selected Reports and Publications", compact = TRUE)
 ```

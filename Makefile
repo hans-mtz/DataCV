@@ -4,7 +4,7 @@
 # download the sheet first. Make only re-renders when something it depends on
 # changed: the .qmd, the R helpers, the templates, or the data.
 
-.PHONY: help all academic industry teaching fetch example clean FORCE
+.PHONY: help all academic industry teaching fetch push example clean FORCE
 
 # Data folder: data/ if you have fetched your sheet, else the fake examples.
 # DATA=example forces the examples.
@@ -25,6 +25,7 @@ help:
 	@echo "make teaching   Typst CV focused on teaching      -> output/cv/teaching.pdf"
 	@echo "make all        all three"
 	@echo "make fetch      download the private Google Sheet into data/"
+	@echo "make push       upload edits in data/*.csv to the sheet (APPLY=1 to write)"
 	@echo "make example    render all three with the fake example data"
 	@echo "make clean      delete output/ and generated files"
 	@echo ""
@@ -56,6 +57,9 @@ all:
 
 fetch:
 	Rscript R/fetch_data.R
+
+push:
+	Rscript R/push_data.R $(if $(APPLY),--apply)
 
 example:
 	$(MAKE) all DATA=example

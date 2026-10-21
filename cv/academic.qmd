@@ -8,7 +8,7 @@ format:
     documentclass: article
     pdf-engine: pdflatex
     fontsize: 11pt
-    geometry: margin=1in
+    geometry: margin=0.8in
     colorlinks: true
     linkcolor: black
     urlcolor: blue

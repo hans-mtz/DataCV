@@ -151,10 +151,10 @@
   lastname: "",
 ) = {
   context {
-    pad(bottom: 5pt)[
-      #block[
+    pad(bottom: 0pt)[
+      #block(below: 0.4em)[
         #set text(
-          size: 32pt,
+          size: 26pt,
           style: "normal",
           font: state-font-header.get(),
         )
@@ -169,8 +169,8 @@
   position: "",
 ) = {
   set block(
-    above: 0.75em,
-    below: 0.75em,
+    above: 0.4em,
+    below: 0.4em,
   )
 
   context {
@@ -199,7 +199,7 @@
     style: "italic",
   )
 
-  block[#address]
+  if address != "" { block[#address] }
 }
 
 #let create-header-contacts(
@@ -207,7 +207,7 @@
 ) = {
   let separator = box(width: 2pt)
   if (contacts.len() > 1) {
-    block[
+    block(above: 0.4em)[
       #set text(
         size: 9pt,
         weight: "regular",
@@ -216,7 +216,7 @@
       #align(horizon)[
         #for contact in contacts [
           #set box(height: 9pt)
-          #box[#parse_icon_string(contact.icon) #link(contact.url)[#contact.text]]
+          #box[#parse_icon_string(contact.icon) #if contact.url == "" [#contact.text] else [#link(contact.url)[#contact.text]]]
           #separator
         ]
       ]
@@ -321,6 +321,19 @@
   ]
 }
 
+/// One-line entry: bold title and institution on the left, location and date
+/// on the right. Takes less space than `resume-entry`.
+#let resume-line(left: [], right: []) = {
+  block(above: 0.75em, below: 0.45em)[
+    #grid(
+      columns: (1fr, auto),
+      column-gutter: 1em,
+      text(size: 10.5pt, fill: color-darkgray)[#left],
+      context text(size: 9pt, style: "italic", fill: state-color-accent.get())[#right],
+    )
+  ]
+}
+
 //------------------------------------------------------------------------------
 // Resume Template
 //------------------------------------------------------------------------------
@@ -387,14 +400,10 @@
     outlined: false,
   )
 
-  show heading.where(level: 1): it => [
-    #set block(
-      above: 1.5em,
-      below: 1em,
-    )
-    
+  // the show rule replaces the heading, so spacing goes on a wrapping block
+  show heading.where(level: 1): it => block(above: 1.25em, below: 0.6em)[
     #set text(
-        size: 16pt,
+        size: 13pt,
         weight: "regular",
     )
 

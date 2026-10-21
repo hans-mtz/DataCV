@@ -11,6 +11,8 @@ CV_EMAIL=
 CV_FIRSTNAME=
 CV_LASTNAME=
 CV_ADDRESS=
+# Optional: short location for the industry/teaching contact line, e.g. "London, ON, Canada"
+CV_CITY=
 
 # Optional: read CSVs from another folder instead of data/ (or data/example/)
 # CV_DATA_DIR=

@@ -178,11 +178,18 @@ details_of <- function(row, version = NULL) {
 
 # ---- Typst -------------------------------------------------------------------
 
+# compact = TRUE puts title, institution, location and date on one line
 typst_entry <- function(title, location, date, description, details = character(),
-                        as_list = TRUE) {
+                        as_list = TRUE, compact = FALSE) {
   m <- function(x) paste0("[", md_inline(x, "typst"), "]")
-  out <- sprintf("#resume-entry(\n  title: %s,\n  location: %s,\n  date: %s,\n  description: %s,\n)",
-                 m(title), m(location), m(date), m(description))
+  out <- if (compact) {
+    left <- paste0("**", title, "**", if (!blank(description)) paste0(", ", description))
+    right <- paste(c(location, date)[!blank(c(location, date))], collapse = " · ")
+    sprintf("#resume-line(\n  left: %s,\n  right: %s,\n)", m(left), m(right))
+  } else {
+    sprintf("#resume-entry(\n  title: %s,\n  location: %s,\n  date: %s,\n  description: %s,\n)",
+            m(title), m(location), m(date), m(description))
+  }
   if (length(details)) {
     items <- vapply(details, md_inline, "", engine = "typst", USE.NAMES = FALSE)
     body <- if (as_list) paste0("- ", items, collapse = "\n") else paste(items, collapse = "\n\n")
@@ -206,8 +213,24 @@ typst_references <- function(e) {
          ",\n)]\n]")
 }
 
-typst_section <- function(e, details = FALSE, version = NULL) {
+# Publications as a one-line-per-item list: Title, coauthors. *Venue*, year (tag).
+typst_pub_list <- function(e) {
+  items <- vapply(seq_len(nrow(e)), function(i) {
+    r <- e[i, ]
+    title <- if (!blank(r$url)) sprintf("[%s](%s)", r$title, r$url) else r$title
+    venue <- paste(c(if (!blank(r$institution)) paste0("*", r$institution, "*"),
+                     if (!blank(r$end)) r$end), collapse = ", ")
+    if (!blank(r$tag)) venue <- paste0(venue, " (", r$tag, ")")
+    x <- paste0(title, if (!blank(r$loc)) paste0(", ", r$loc), ".",
+                if (venue != "") paste0(" ", venue, "."))
+    paste0("- ", md_inline(x, "typst"))
+  }, character(1))
+  paste0("#resume-item[\n", paste(items, collapse = "\n"), "\n]")
+}
+
+typst_section <- function(e, details = FALSE, version = NULL, compact = FALSE) {
   if (all(e$section == "references")) return(typst_references(e))
+  if (compact && !details && all(e$section %in% PUB_SECTIONS)) return(typst_pub_list(e))
   vapply(seq_len(nrow(e)), function(i) {
     r <- e[i, ]
     d <- if (details || !(r$section %in% PUB_SECTIONS)) details_of(r, version) else character()
@@ -218,7 +241,8 @@ typst_section <- function(e, details = FALSE, version = NULL) {
                      if (!blank(r$loc)) r$loc), collapse = " ")
       typst_entry(title, venue, cv_date(NA, r$end), who, d, as_list = FALSE)
     } else {
-      typst_entry(r$title, r$loc, cv_date(r$start, r$end), r$institution, d)
+      typst_entry(r$title, r$loc, cv_date(r$start, r$end), r$institution, d,
+                  compact = compact)
     }
   }, character(1))
 }
@@ -341,12 +365,12 @@ cv_heading <- function(title, engine) {
 # One call per section: filter, sort, format, print. The heading (and an
 # optional intro text block, `aside`) is only printed when there are entries.
 cv_print_section <- function(d, version, sections, engine, title = NULL,
-                             details = FALSE, aside = NULL) {
+                             details = FALSE, aside = NULL, compact = FALSE) {
   e <- cv_entries(d, version, sections)
   if (!nrow(e)) return(invisible())
   if (!is.null(title)) cv_heading(title, engine)
   if (!is.null(aside)) cv_print_text(d, version, aside)
-  lines <- if (engine == "typst") typst_section(e, details, version) else latex_section(e, details, version)
+  lines <- if (engine == "typst") typst_section(e, details, version, compact) else latex_section(e, details, version)
   cv_emit(lines, engine)
 }
 
@@ -373,6 +397,28 @@ cv_print_skills <- function(d, engine, title = "Skills") {
   if (!is.na(sw)) cat("\n**Software:** ", sw, "\n", sep = "")
   if (!is.na(sw) && !is.na(lang) && engine == "latex") cat("\n\\vspace{-0.6em}\n")
   if (!is.na(lang)) cat("\n**Languages:** ", lang, "\n", sep = "")
+}
+
+# Skills in a two-column grid (Typst only). The text block `loc` holds one group
+# per line, "Label: items"; software and languages from language_skills are added
+# at the end.
+cv_print_skill_grid <- function(d, version, loc = "core_skills", title = "Skills") {
+  t <- cv_text(d, version, loc)
+  lines <- if (is.na(t)) character() else trimws(strsplit(t, "\n")[[1]])
+  lines <- lines[lines != ""]
+  sw <- cv_skills(d, "software")
+  lang <- cv_skills(d, "language")
+  if (!is.na(sw)) lines <- c(lines, paste("Software:", sw))
+  if (!is.na(lang)) lines <- c(lines, paste("Languages:", lang))
+  if (!length(lines)) return(invisible())
+  cells <- vapply(lines, function(x) {
+    label <- sub(":.*", "", x)
+    items <- trimws(sub("^[^:]*:", "", x))
+    sprintf("[#strong[%s:] %s]", md_inline(label, "typst"), md_inline(items, "typst"))
+  }, "", USE.NAMES = FALSE)
+  cv_heading(title, "typst")
+  cv_emit(paste0("#resume-item[#grid(columns: (1fr, 1fr), column-gutter: 1.5em, row-gutter: 0.55em,\n",
+                 paste(cells, collapse = ",\n"), ",\n)]"), "typst")
 }
 
 # Abstracts for the end of the CV. Each entry's description_1..6 (after
